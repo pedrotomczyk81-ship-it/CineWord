@@ -1,0 +1,5 @@
+header { background: #151b2c; color: white; }
+nav { max-width: 1100px; margin: auto; padding: 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+a { text-decoration: none; }
+.marca { font-size: 26px; font-weight: 800; }
+.marca span { color: #f7bc56; }

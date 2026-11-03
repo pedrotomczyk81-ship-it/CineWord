@@ -1,0 +1,18 @@
+ .apresentacao { background: #202b45; color: white; padding: 72px max(24px, calc((100% - 1052px) / 2)); display: flex; align-items: center; justify-content: space-between; gap: 48px; }
+.conteudo { max-width: 640px; }
+.etiqueta { font-size: 12px; letter-spacing: 3px; font-weight: bold; color: #f7bc56; }
+h1 { font-size: clamp(36px, 5vw, 60px); line-height: 1.1; margin: 20px 0; }
+.descricao { color: #d5dcec; line-height: 1.8; font-size: 17px; }
+.botao { display: inline-block; background: #f7bc56; color: #172036; font-weight: bold; text-decoration: none; padding: 15px 22px; border-radius: 6px; margin-top: 16px; }
+.simbolo { border: 2px solid #72809d; border-radius: 24px; padding: 38px; font-size: 64px; font-weight: bold; color: #f7bc56; transform: rotate(-6deg); }
+.simbolo span { display: block; text-align: center; font-size: 12px; letter-spacing: 5px; margin-top: 12px; }
+.projeto { max-width: 1100px; margin: auto; padding: 56px 24px 64px; scroll-margin-top: 24px; }
+.projeto > .etiqueta { color: #895900; }
+h2 { font-size: clamp(26px, 3vw, 34px); margin: 14px 0; }
+.projeto p { line-height: 1.7; }
+.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 32px; }
+article { background: white; border: 1px solid #dfe3ec; padding: 28px; border-radius: 10px; }
+.numero { color: #895900; font-size: 13px; font-weight: bold; }
+h3 { margin: 18px 0 8px; }
+article p { color: #535c70; margin-bottom: 0; }
+@media (max-width: 700px) { .apresentacao { padding: 48px 24px; } .simbolo { display: none; } .cards { grid-template-columns: 1fr; } }
