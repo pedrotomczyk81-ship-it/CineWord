@@ -3,3 +3,7 @@ nav { max-width: 1100px; margin: auto; padding: 24px; display: flex; align-items
 a { text-decoration: none; }
 .marca { font-size: 26px; font-weight: 800; }
 .marca span { color: #f7bc56; }
+.links { display: flex; align-items: center; gap: 24px; }
+.links a { color: #d7dbe7; padding: 7px 0; border-bottom: 2px solid transparent; }
+.links a:hover, .links a.ativo { color: white; border-bottom-color: #f7bc56; }
+@media (max-width: 560px) { nav { align-items: flex-start; } .links { align-items: flex-end; flex-direction: column; gap: 10px; } }

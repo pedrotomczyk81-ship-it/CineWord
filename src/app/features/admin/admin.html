@@ -1,0 +1,56 @@
+<section class="pagina" aria-labelledby="titulo-admin">
+  <header class="cabecalho-pagina">
+    <div>
+      <p class="etiqueta">ADMINISTRAÇÃO</p>
+      <h1 id="titulo-admin">Sessões cadastradas</h1>
+      <p>Consulte e gerencie a programação do CineWord.</p>
+    </div>
+    <a class="botao botao-primario" routerLink="/admin/novo">Nova sessão</a>
+  </header>
+
+  @if (mensagemErro) {
+    <div class="aviso erro" role="alert">
+      <span>{{ mensagemErro }}</span>
+      <button type="button" (click)="load()">Tentar novamente</button>
+    </div>
+  }
+
+  @if (carregando) {
+    <p class="estado" aria-live="polite">Carregando sessões...</p>
+  } @else if (sessoes.length === 0) {
+    <div class="estado vazio">
+      <h2>Nenhuma sessão cadastrada</h2>
+      <p>Cadastre a primeira sessão para montar a programação.</p>
+      <a class="botao botao-primario" routerLink="/admin/novo">Cadastrar sessão</a>
+    </div>
+  } @else {
+    <div class="tabela-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Filme</th><th>Gênero</th><th>Classificação</th><th>Sala</th>
+            <th>Data e horário</th><th>Status</th><th><span class="sr-only">Ações</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (sessao of sessoes; track sessao.id) {
+            <tr>
+              <td><strong>{{ sessao.filme }}</strong></td>
+              <td>{{ sessao.genero }}</td>
+              <td>{{ sessao.classificacaoIndicativa === 0 ? 'Livre' : sessao.classificacaoIndicativa + ' anos' }}</td>
+              <td>{{ sessao.sala }}</td>
+              <td>{{ sessao.data | date: 'dd/MM/yyyy' : 'UTC' }} às {{ sessao.horario }}</td>
+              <td><span class="status" [class.indisponivel]="!sessao.disponivel">{{ sessao.disponivel ? 'Disponível' : 'Indisponível' }}</span></td>
+              <td class="acoes">
+                <a class="botao botao-secundario" [routerLink]="['/admin/editar', sessao.id]">Editar</a>
+                <button class="botao botao-perigo" type="button" [disabled]="excluindoId === sessao.id" (click)="excluir(sessao)">
+                  {{ excluindoId === sessao.id ? 'Excluindo...' : 'Excluir' }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

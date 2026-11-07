@@ -1,0 +1,70 @@
+<section class="pagina-formulario" aria-labelledby="titulo-formulario">
+  <p class="etiqueta">PROGRAMAÇÃO</p>
+  <h1 id="titulo-formulario">{{ editando ? 'Editar sessão' : 'Nova sessão' }}</h1>
+  <p class="introducao">Preencha os dados do filme e da exibição.</p>
+
+  @if (mensagemErro) {
+    <p class="aviso" role="alert">{{ mensagemErro }}</p>
+  }
+
+  @if (carregando) {
+    <p class="estado" aria-live="polite">Carregando dados da sessão...</p>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="campo campo-largo">
+        <label for="filme">Filme</label>
+        <input id="filme" type="text" formControlName="filme" placeholder="Nome do filme" />
+        @if (campoInvalido('filme')) { <small>Informe o filme com pelo menos 2 caracteres.</small> }
+      </div>
+
+      <div class="campo">
+        <label for="genero">Gênero</label>
+        <select id="genero" formControlName="genero">
+          <option value="">Selecione</option><option>Ação</option><option>Animação</option>
+          <option>Aventura</option><option>Comédia</option><option>Drama</option>
+          <option>Ficção científica</option><option>Romance</option><option>Suspense</option><option>Terror</option>
+        </select>
+        @if (campoInvalido('genero')) { <small>Selecione o gênero.</small> }
+      </div>
+
+      <div class="campo">
+        <label for="classificacao">Classificação indicativa</label>
+        <select id="classificacao" formControlName="classificacaoIndicativa">
+          <option [ngValue]="0">Livre</option><option [ngValue]="10">10 anos</option>
+          <option [ngValue]="12">12 anos</option><option [ngValue]="14">14 anos</option>
+          <option [ngValue]="16">16 anos</option><option [ngValue]="18">18 anos</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="sala">Sala</label>
+        <input id="sala" type="number" min="1" formControlName="sala" />
+        @if (campoInvalido('sala')) { <small>Informe uma sala válida.</small> }
+      </div>
+
+      <div class="campo">
+        <label for="data">Data</label>
+        <input id="data" type="date" formControlName="data" />
+        @if (campoInvalido('data')) { <small>Informe a data.</small> }
+      </div>
+
+      <div class="campo">
+        <label for="horario">Horário</label>
+        <input id="horario" type="time" formControlName="horario" />
+        @if (campoInvalido('horario')) { <small>Informe o horário.</small> }
+      </div>
+
+      <label class="checkbox campo-largo">
+        <input type="checkbox" formControlName="disponivel" />
+        Sessão disponível para o público
+      </label>
+
+      <div class="acoes campo-largo">
+        <a class="botao botao-secundario" routerLink="/admin">Cancelar</a>
+        <button class="botao botao-primario" type="submit" [disabled]="enviando">
+          {{ enviando ? 'Salvando...' : (editando ? 'Salvar alterações' : 'Cadastrar sessão') }}
+        </button>
+      </div>
+    </form>
+  }
+</section>

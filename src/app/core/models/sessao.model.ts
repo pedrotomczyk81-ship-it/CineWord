@@ -1,5 +1,5 @@
 export interface Sessao {
-  id: number;
+  id: string;
   filme: string;
   genero: string;
   classificacaoIndicativa: number;

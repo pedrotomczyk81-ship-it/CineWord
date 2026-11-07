@@ -1,0 +1,26 @@
+.pagina { max-width: 1180px; margin: auto; padding: 48px 24px 72px; }
+.cabecalho-pagina { display: flex; justify-content: space-between; align-items: end; gap: 24px; margin-bottom: 32px; }
+.etiqueta { margin: 0; color: #895900; font-size: 12px; font-weight: 800; letter-spacing: 3px; }
+h1 { margin: 10px 0 8px; font-size: clamp(30px, 5vw, 44px); }
+.cabecalho-pagina p:last-child { margin: 0; color: #5d6475; }
+.botao { display: inline-flex; justify-content: center; align-items: center; border: 0; border-radius: 6px; padding: 11px 15px; font: inherit; font-weight: 700; text-decoration: none; cursor: pointer; white-space: nowrap; }
+.botao:disabled { cursor: wait; opacity: .65; }
+.botao-primario { background: #f7bc56; color: #172036; }
+.botao-secundario { background: #e7eaf1; color: #202b45; }
+.botao-perigo { background: #a92c36; color: white; }
+.aviso { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 15px 18px; margin-bottom: 20px; border-radius: 7px; }
+.aviso.erro { background: #fde8e8; color: #842029; border: 1px solid #f2b9be; }
+.aviso button { border: 0; background: transparent; color: inherit; font-weight: 700; text-decoration: underline; cursor: pointer; }
+.estado { padding: 48px 24px; background: white; border: 1px solid #dfe3ec; border-radius: 10px; text-align: center; }
+.vazio h2 { margin-top: 0; }
+.vazio .botao { margin-top: 10px; }
+.tabela-container { overflow-x: auto; background: white; border: 1px solid #dfe3ec; border-radius: 10px; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 16px; border-bottom: 1px solid #e7e9ef; text-align: left; vertical-align: middle; }
+th { color: #596174; font-size: 12px; letter-spacing: .5px; text-transform: uppercase; }
+tbody tr:last-child td { border-bottom: 0; }
+.status { display: inline-block; padding: 5px 9px; border-radius: 999px; background: #dff4e7; color: #176237; font-size: 12px; font-weight: 800; }
+.status.indisponivel { background: #f1e3e3; color: #812c32; }
+.acoes { display: flex; gap: 8px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media (max-width: 720px) { .cabecalho-pagina { align-items: stretch; flex-direction: column; } .cabecalho-pagina > .botao { align-self: start; } }

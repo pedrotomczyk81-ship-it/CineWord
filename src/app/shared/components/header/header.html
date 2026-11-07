@@ -1,6 +1,9 @@
 <header>
   <nav aria-label="Navegação principal">
     <a class="marca" routerLink="/">Cine<span>Word</span></a>
-    <a routerLink="/" aria-current="page">Início</a>
+    <div class="links">
+      <a routerLink="/" routerLinkActive="ativo" [routerLinkActiveOptions]="{ exact: true }">Início</a>
+      <a routerLink="/admin" routerLinkActive="ativo">Administrar sessões</a>
+    </div>
   </nav>
 </header>
