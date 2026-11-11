@@ -1,56 +1,144 @@
-<section class="pagina" aria-labelledby="titulo-admin">
-  <header class="cabecalho-pagina">
-    <div>
-      <p class="etiqueta">ADMINISTRAÇÃO</p>
-      <h1 id="titulo-admin">Sessões cadastradas</h1>
-      <p>Consulte e gerencie a programação do CineWord.</p>
+<section class="admin-shell" aria-labelledby="titulo-admin">
+  <header class="hero-admin">
+    <div class="hero-copy">
+      <p class="etiqueta">Painel administrativo</p>
+      <h1 id="titulo-admin">Programação</h1>
+      <p>Acompanhe as sessões e mantenha as informações do cinema atualizadas.</p>
     </div>
-    <a class="botao botao-primario" routerLink="/admin/novo">Nova sessão</a>
+    <a class="botao botao-primario" routerLink="/admin/novo">
+      <span aria-hidden="true">＋</span>
+      Nova sessão
+    </a>
   </header>
+
+  <div class="resumo" aria-label="Resumo da programação">
+    <article class="metrica metrica-destaque">
+      <span class="metrica-rotulo">Total de sessões</span>
+      <strong>{{ sessoes().length }}</strong>
+      <small>na programação</small>
+    </article>
+    <article class="metrica">
+      <span class="metrica-rotulo">Disponíveis</span>
+      <strong>{{ totalDisponiveis() }}</strong>
+      <small>com venda aberta</small>
+    </article>
+    <article class="metrica">
+      <span class="metrica-rotulo">Indisponíveis</span>
+      <strong>{{ totalIndisponiveis() }}</strong>
+      <small>fora de exibição</small>
+    </article>
+    <article class="metrica">
+      <span class="metrica-rotulo">Salas em uso</span>
+      <strong>{{ totalSalas() }}</strong>
+      <small>salas programadas</small>
+    </article>
+  </div>
 
   @if (mensagemErro) {
     <div class="aviso erro" role="alert">
-      <span>{{ mensagemErro }}</span>
+      <div>
+        <strong>Algo deu errado</strong>
+        <span>{{ mensagemErro }}</span>
+      </div>
       <button type="button" (click)="load()">Tentar novamente</button>
     </div>
   }
 
-  @if (carregando) {
-    <p class="estado" aria-live="polite">Carregando sessões...</p>
-  } @else if (sessoes.length === 0) {
-    <div class="estado vazio">
-      <h2>Nenhuma sessão cadastrada</h2>
-      <p>Cadastre a primeira sessão para montar a programação.</p>
-      <a class="botao botao-primario" routerLink="/admin/novo">Cadastrar sessão</a>
-    </div>
-  } @else {
-    <div class="tabela-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Filme</th><th>Gênero</th><th>Classificação</th><th>Sala</th>
-            <th>Data e horário</th><th>Status</th><th><span class="sr-only">Ações</span></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (sessao of sessoes; track sessao.id) {
+  <section class="painel-lista" aria-labelledby="titulo-lista">
+    <header class="cabecalho-lista">
+      <div>
+        <h2 id="titulo-lista">Sessões cadastradas</h2>
+        <p>{{ sessoesFiltradas().length }} {{ sessoesFiltradas().length === 1 ? 'resultado' : 'resultados' }}</p>
+      </div>
+
+      <div class="filtros">
+        <label class="busca">
+          <span class="sr-only">Buscar sessão</span>
+          <span aria-hidden="true">⌕</span>
+          <input
+            type="search"
+            placeholder="Buscar filme, gênero ou sala"
+            [ngModel]="busca()"
+            (ngModelChange)="busca.set($event)"
+          />
+        </label>
+        <label class="filtro-status">
+          <span class="sr-only">Filtrar por status</span>
+          <select [ngModel]="filtroStatus()" (ngModelChange)="filtroStatus.set($event)">
+            <option value="todas">Todas as sessões</option>
+            <option value="disponiveis">Disponíveis</option>
+            <option value="indisponiveis">Indisponíveis</option>
+          </select>
+        </label>
+      </div>
+    </header>
+
+    @if (carregando) {
+      <div class="skeleton-lista" aria-live="polite" aria-label="Carregando sessões">
+        @for (item of [1, 2, 3, 4]; track item) {
+          <div class="skeleton-linha"><span></span><span></span><span></span><span></span></div>
+        }
+      </div>
+    } @else if (sessoes().length === 0) {
+      <div class="estado vazio">
+        <span class="estado-marca" aria-hidden="true">CW</span>
+        <h3>Nenhuma sessão cadastrada</h3>
+        <p>Cadastre a primeira sessão para começar a montar a programação.</p>
+        <a class="botao botao-primario" routerLink="/admin/novo">Cadastrar sessão</a>
+      </div>
+    } @else if (sessoesFiltradas().length === 0) {
+      <div class="estado vazio">
+        <h3>Nenhum resultado encontrado</h3>
+        <p>Tente buscar outro filme ou remova os filtros aplicados.</p>
+        <button class="botao botao-secundario" type="button" (click)="limparFiltros()">Limpar filtros</button>
+      </div>
+    } @else {
+      <div class="tabela-container">
+        <table>
+          <thead>
             <tr>
-              <td><strong>{{ sessao.filme }}</strong></td>
-              <td>{{ sessao.genero }}</td>
-              <td>{{ sessao.classificacaoIndicativa === 0 ? 'Livre' : sessao.classificacaoIndicativa + ' anos' }}</td>
-              <td>{{ sessao.sala }}</td>
-              <td>{{ sessao.data | date: 'dd/MM/yyyy' : 'UTC' }} às {{ sessao.horario }}</td>
-              <td><span class="status" [class.indisponivel]="!sessao.disponivel">{{ sessao.disponivel ? 'Disponível' : 'Indisponível' }}</span></td>
-              <td class="acoes">
-                <a class="botao botao-secundario" [routerLink]="['/admin/editar', sessao.id]">Editar</a>
-                <button class="botao botao-perigo" type="button" [disabled]="excluindoId === sessao.id" (click)="excluir(sessao)">
-                  {{ excluindoId === sessao.id ? 'Excluindo...' : 'Excluir' }}
-                </button>
-              </td>
+              <th>Filme</th>
+              <th>Exibição</th>
+              <th>Data e horário</th>
+              <th>Status</th>
+              <th><span class="sr-only">Ações</span></th>
             </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  }
+          </thead>
+          <tbody>
+            @for (sessao of sessoesFiltradas(); track sessao.id) {
+              <tr>
+                <td data-label="Filme">
+                  <div class="filme">
+                    <span class="filme-inicial" aria-hidden="true">{{ sessao.filme.charAt(0) }}</span>
+                    <div>
+                      <strong>{{ sessao.filme }}</strong>
+                      <span>{{ sessao.genero }} · {{ sessao.classificacaoIndicativa === 0 ? 'Livre' : sessao.classificacaoIndicativa + ' anos' }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="Exibição"><strong>Sala {{ sessao.sala }}</strong></td>
+                <td data-label="Data e horário">
+                  <div class="data">
+                    <strong>{{ sessao.data | date: 'dd/MM/yyyy' : 'UTC' }}</strong>
+                    <span>{{ sessao.horario }}</span>
+                  </div>
+                </td>
+                <td data-label="Status">
+                  <span class="status" [class.indisponivel]="!sessao.disponivel">
+                    {{ sessao.disponivel ? 'Disponível' : 'Indisponível' }}
+                  </span>
+                </td>
+                <td class="acoes">
+                  <a class="acao-editar" [routerLink]="['/admin/editar', sessao.id]">Editar</a>
+                  <button class="acao-excluir" type="button" [disabled]="excluindoId === sessao.id" (click)="excluir(sessao)" [attr.aria-label]="'Excluir sessão de ' + sessao.filme">
+                    {{ excluindoId === sessao.id ? 'Excluindo...' : 'Excluir' }}
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
 </section>
