@@ -1,0 +1,142 @@
+:host {
+  display: block;
+  min-width: 0;
+}
+article {
+  height: 100%;
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.cartaz {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: 250px;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 24px;
+  background: #202b45;
+  color: #f7bc56;
+  text-decoration: none;
+}
+.cartaz.animacao {
+  background: #17534c;
+  color: #ffe0a3;
+}
+.cartaz.drama {
+  background: #743e39;
+  color: #ffe8ca;
+}
+.cartaz.suspense {
+  background: #302d43;
+  color: #e5d9ff;
+}
+.marca {
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.cartaz > strong {
+  position: relative;
+  max-width: 240px;
+  font-size: 30px;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+.orbita {
+  position: absolute;
+  z-index: -1;
+  right: -60px;
+  top: 42px;
+  width: 220px;
+  height: 220px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  opacity: 0.2;
+}
+.orbita:after {
+  content: '';
+  position: absolute;
+  inset: 24px;
+  border: 30px solid currentColor;
+  border-radius: 50%;
+}
+.rodape-cartaz {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+.classificacao {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 800;
+}
+.info {
+  padding: 20px;
+}
+.status {
+  display: inline-block;
+  color: #23613b;
+  background: #e2f2e8;
+  padding: 5px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 750;
+}
+.status.fechada {
+  background: #f4e5e6;
+  color: #8a3038;
+}
+h3 {
+  font-size: 18px;
+  line-height: 1.35;
+  margin: 12px 0 6px;
+  overflow-wrap: anywhere;
+}
+h3 a {
+  text-decoration: none;
+}
+h3 a:hover {
+  text-decoration: underline;
+}
+p {
+  font-size: 13px;
+  color: var(--texto-secundario);
+  margin: 0 0 18px;
+}
+.exibicao {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 12px;
+  padding-top: 16px;
+  border-top: 1px solid var(--borda);
+}
+.detalhes {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  min-height: 32px;
+  color: #81530a;
+  font-size: 13px;
+  font-weight: 750;
+  text-decoration: none;
+}
+.detalhes:hover {
+  text-decoration: underline;
+}

@@ -1,0 +1,57 @@
+<section class="pagina" aria-labelledby="titulo-sobre">
+  <p class="etiqueta">SOBRE O PROJETO</p>
+  <h1 id="titulo-sobre">Tudo o que uma sessão precisa.</h1>
+  <p class="introducao">
+    O CineWord é um projeto acadêmico para organizar a programação de um cinema, da escolha do filme
+    ao controle das sessões.
+  </p>
+  <div class="recursos">
+    <article>
+      <span>01 / EXPLORAR</span>
+      <h2>Encontre sua sessão</h2>
+      <p>
+        Veja a programação, filtre por filme, gênero, data ou disponibilidade e consulte os detalhes
+        de cada exibição.
+      </p>
+    </article>
+    <article>
+      <span>02 / ORGANIZAR</span>
+      <h2>Monte a programação</h2>
+      <p>
+        Cadastre e edite filmes, classificações, salas, datas e horários no painel de administração.
+      </p>
+    </article>
+    <article>
+      <span>03 / ACOMPANHAR</span>
+      <h2>Mantenha tudo em dia</h2>
+      <p>
+        Altere a disponibilidade, exclua sessões com confirmação e acompanhe o resumo da
+        programação.
+      </p>
+    </article>
+  </div>
+  <section class="dados" aria-labelledby="titulo-dados">
+    <h2 id="titulo-dados">Onde os dados ficam salvos?</h2>
+    @if (service.modoLocal) {
+      <p>
+        Esta versão usa o <strong>modo local</strong>. As sessões ficam salvas neste navegador e
+        continuam disponíveis depois de atualizar a página. Outro navegador ou dispositivo terá seus
+        próprios registros.
+      </p>
+      <p>
+        No primeiro acesso são incluídas 12 sessões fictícias para a demonstração. Limpar os dados
+        do site remove os cadastros locais. O Firebase ainda não está conectado.
+      </p>
+    } @else {
+      <p>
+        Esta versão está configurada para usar o Firebase Realtime Database. O acesso depende da
+        conexão, da autenticação e das regras do projeto configurado.
+      </p>
+    }
+    <p>O projeto gerencia a programação. Não realiza venda de ingressos ou reserva de assentos.</p>
+  </section>
+  <div class="links">
+    <a class="botao" routerLink="/programacao">Ver programação →</a
+    ><a routerLink="/admin">Administrar sessões</a>
+  </div>
+</section>

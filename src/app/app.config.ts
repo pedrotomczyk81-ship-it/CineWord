@@ -1,11 +1,14 @@
-import { ApplicationConfig, LOCALE_ID } from "@angular/core";
-import { provideHttpClient } from "@angular/common/http";
-import { provideRouter } from "@angular/router";
-import { routes } from "./app.routes";
+import { ApplicationConfig, LOCALE_ID } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
+import { routes } from './app.routes';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideHttpClient(),
-    provideRouter(routes),
-    { provide: LOCALE_ID, useValue: "pt-BR" },
+    provideRouter(
+      routes,
+      withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
+    ),
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
   ],
 };

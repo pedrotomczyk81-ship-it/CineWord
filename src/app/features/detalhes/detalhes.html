@@ -1,0 +1,55 @@
+﻿<section class="pagina">
+  <a class="voltar" routerLink="/programacao">← Voltar à programação</a>
+  @if (carregando()) {
+    <p role="status">Carregando sessão…</p>
+  } @else if (erro()) {
+    <div class="estado" role="alert">
+      <h1>Sessão não disponível</h1>
+      <p>{{ erro() }}</p>
+      <button class="botao" type="button" (click)="load()">Tentar novamente</button>
+    </div>
+  } @else if (sessao(); as item) {
+    <div class="detalhe">
+      <app-sessao-card [sessao]="item" [somenteCartaz]="true" />
+      <div class="texto">
+        <p class="etiqueta">DETALHES DA SESSÃO</p>
+        <h1>{{ item.filme }}</h1>
+        <p class="subtitulo">
+          {{ item.genero }} ·
+          {{
+            item.classificacaoIndicativa === 0
+              ? 'Classificação livre'
+              : 'Classificação: ' + item.classificacaoIndicativa + ' anos'
+          }}
+        </p>
+        <dl>
+          <div>
+            <dt>Data</dt>
+            <dd>{{ item.data | date: 'dd/MM/yyyy' : 'UTC' }}</dd>
+          </div>
+          <div>
+            <dt>Horário</dt>
+            <dd>{{ item.horario }}</dd>
+          </div>
+          <div>
+            <dt>Local</dt>
+            <dd>Sala {{ item.sala }}</dd>
+          </div>
+          <div>
+            <dt>Disponibilidade</dt>
+            <dd>{{ item.disponivel ? 'Disponível' : 'Indisponível' }}</dd>
+          </div>
+        </dl>
+        <p class="orientacao">
+          {{
+            item.disponivel
+              ? 'Esta sessão está aberta na programação. Consulte a classificação indicativa antes de escolher sua exibição.'
+              : 'Esta sessão está indisponível no momento. Explore a programação para encontrar outra exibição.'
+          }}
+        </p>
+        <a class="botao" routerLink="/programacao">Explorar outras sessões</a
+        ><a class="editar" [routerLink]="['/admin/editar', item.id]">Editar esta sessão</a>
+      </div>
+    </div>
+  }
+</section>

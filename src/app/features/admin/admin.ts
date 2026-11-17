@@ -1,10 +1,11 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 
 import { Sessao } from '../../core/models/sessao.model';
-import { SessaoService } from '../../core/service/sessao.service';
+import { mensagemDaFalha, SessaoService } from '../../core/service/sessao.service';
 
 @Component({
   selector: 'app-admin',
@@ -14,6 +15,10 @@ import { SessaoService } from '../../core/service/sessao.service';
 })
 export class Admin implements OnInit {
   private readonly sessaoService = inject(SessaoService);
+  private readonly cdr = inject(ChangeDetectorRef);
+  private readonly route = inject(ActivatedRoute);
+  readonly mensagemSucesso = signal('');
+  alterandoId = '';
 
   readonly sessoes = signal<Sessao[]>([]);
   readonly busca = signal('');
@@ -31,8 +36,7 @@ export class Admin implements OnInit {
             valor.toLocaleLowerCase('pt-BR').includes(termo),
           );
         const correspondeStatus =
-          status === 'todas' ||
-          (status === 'disponiveis' ? sessao.disponivel : !sessao.disponivel);
+          status === 'todas' || (status === 'disponiveis' ? sessao.disponivel : !sessao.disponivel);
 
         return correspondeBusca && correspondeStatus;
       })
@@ -45,15 +49,16 @@ export class Admin implements OnInit {
   readonly totalIndisponiveis = computed(
     () => this.sessoes().filter((sessao) => !sessao.disponivel).length,
   );
-  readonly totalSalas = computed(
-    () => new Set(this.sessoes().map((sessao) => sessao.sala)).size,
-  );
+  readonly totalSalas = computed(() => new Set(this.sessoes().map((sessao) => sessao.sala)).size);
 
   carregando = true;
   mensagemErro = '';
   excluindoId = '';
 
   ngOnInit(): void {
+    const acao = this.route.snapshot.queryParamMap.get('sucesso');
+    if (acao === 'criada') this.mensagemSucesso.set('Sessão cadastrada com sucesso.');
+    if (acao === 'atualizada') this.mensagemSucesso.set('Sessão atualizada com sucesso.');
     this.load();
   }
 
@@ -61,17 +66,19 @@ export class Admin implements OnInit {
     this.carregando = true;
     this.mensagemErro = '';
 
-    this.sessaoService.getAll().subscribe({
-      next: (sessoes) => {
-        this.sessoes.set(sessoes);
-        this.carregando = false;
-      },
-      error: () => {
-        this.mensagemErro =
-          'Não foi possível carregar as sessões. Confira a conexão com o Firebase.';
-        this.carregando = false;
-      },
-    });
+    this.sessaoService
+      .getAll()
+      .pipe(finalize(() => this.cdr.markForCheck()))
+      .subscribe({
+        next: (sessoes) => {
+          this.sessoes.set(sessoes);
+          this.carregando = false;
+        },
+        error: (error: unknown) => {
+          this.mensagemErro = mensagemDaFalha(error);
+          this.carregando = false;
+        },
+      });
   }
 
   limparFiltros(): void {
@@ -80,26 +87,54 @@ export class Admin implements OnInit {
   }
 
   excluir(sessao: Sessao): void {
-    const confirmou = window.confirm(
-      `Deseja realmente excluir a sessão de “${sessao.filme}”?`,
-    );
+    if (this.excluindoId || this.alterandoId) return;
+    const confirmou = window.confirm(`Deseja realmente excluir a sessão de “${sessao.filme}”?`);
 
     if (!confirmou) return;
 
     this.excluindoId = sessao.id;
     this.mensagemErro = '';
+    this.mensagemSucesso.set('');
 
-    this.sessaoService.delete(sessao.id).subscribe({
-      next: () => {
-        this.sessoes.update((sessoes) =>
-          sessoes.filter(({ id }) => id !== sessao.id),
-        );
-        this.excluindoId = '';
-      },
-      error: () => {
-        this.mensagemErro = 'Não foi possível excluir a sessão.';
-        this.excluindoId = '';
-      },
-    });
+    this.sessaoService
+      .delete(sessao.id)
+      .pipe(finalize(() => this.cdr.markForCheck()))
+      .subscribe({
+        next: () => {
+          this.sessoes.update((sessoes) => sessoes.filter(({ id }) => id !== sessao.id));
+          this.excluindoId = '';
+          this.mensagemSucesso.set('Sessão excluída com sucesso.');
+        },
+        error: (error: unknown) => {
+          this.mensagemErro = mensagemDaFalha(error);
+          this.excluindoId = '';
+        },
+      });
+  }
+  alternarDisponibilidade(sessao: Sessao): void {
+    if (this.alterandoId || this.excluindoId) return;
+    this.alterandoId = sessao.id;
+    this.mensagemErro = '';
+    this.mensagemSucesso.set('');
+    const { id, ...dados } = sessao;
+    this.sessaoService
+      .update(id, { ...dados, disponivel: !dados.disponivel })
+      .pipe(
+        finalize(() => {
+          this.alterandoId = '';
+          this.cdr.markForCheck();
+        }),
+      )
+      .subscribe({
+        next: (atualizada) => {
+          this.sessoes.update((sessoes) =>
+            sessoes.map((item) => (item.id === id ? atualizada : item)),
+          );
+          this.mensagemSucesso.set('Disponibilidade atualizada com sucesso.');
+        },
+        error: (error: unknown) => {
+          this.mensagemErro = mensagemDaFalha(error);
+        },
+      });
   }
 }

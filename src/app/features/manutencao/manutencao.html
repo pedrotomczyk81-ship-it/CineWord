@@ -6,7 +6,13 @@
   <header class="cabecalho-formulario">
     <p class="etiqueta">Painel administrativo</p>
     <h1 id="titulo-formulario">{{ editando ? 'Editar sessão' : 'Nova sessão' }}</h1>
-    <p>{{ editando ? 'Atualize os dados da sessão selecionada.' : 'Inclua uma nova exibição na programação do cinema.' }}</p>
+    <p>
+      {{
+        editando
+          ? 'Atualize os dados da sessão selecionada.'
+          : 'Inclua uma nova exibição na programação do cinema.'
+      }}
+    </p>
   </header>
 
   @if (mensagemErro) {
@@ -19,6 +25,12 @@
   @if (carregando) {
     <div class="estado" aria-live="polite" aria-label="Carregando dados da sessão">
       <span></span><span></span><span></span><span></span>
+    </div>
+  } @else if (falhaCarregamento) {
+    <div class="aviso">
+      <p>Não foi possível abrir esta sessão para edição.</p>
+      <button class="botao botao-secundario" type="button" (click)="load()">Tentar novamente</button
+      ><a routerLink="/admin">Voltar às sessões</a>
     </div>
   } @else {
     <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
@@ -34,28 +46,54 @@
         <div class="campos">
           <div class="campo campo-largo">
             <label for="filme">Filme</label>
-            <input id="filme" type="text" formControlName="filme" placeholder="Ex.: O Auto da Compadecida 2" autocomplete="off" />
-            @if (campoInvalido('filme')) { <small>Informe o filme com pelo menos 2 caracteres.</small> }
+            <input
+              id="filme"
+              type="text"
+              formControlName="filme"
+              placeholder="Ex.: Além das Estrelas"
+              autocomplete="off"
+              maxlength="120"
+              [attr.aria-invalid]="campoInvalido('filme')"
+              aria-describedby="erro-filme"
+            />
+            <small id="erro-filme" [hidden]="!campoInvalido('filme')"
+              >Informe o filme com 2 a 120 caracteres, sem contar espaços nas pontas.</small
+            >
           </div>
 
           <div class="campo">
             <label for="genero">Gênero</label>
             <select id="genero" formControlName="genero">
               <option value="">Selecione o gênero</option>
-              <option>Ação</option><option>Animação</option><option>Aventura</option>
-              <option>Comédia</option><option>Drama</option><option>Ficção científica</option>
-              <option>Romance</option><option>Suspense</option><option>Terror</option>
+              <option>Ação</option>
+              <option>Animação</option>
+              <option>Aventura</option>
+              <option>Comédia</option>
+              <option>Documentário</option>
+              <option>Drama</option>
+              <option>Ficção científica</option>
+              <option>Romance</option>
+              <option>Suspense</option>
+              <option>Terror</option>
             </select>
-            @if (campoInvalido('genero')) { <small>Selecione o gênero.</small> }
+            @if (campoInvalido('genero')) {
+              <small>Selecione o gênero.</small>
+            }
           </div>
 
           <div class="campo">
             <label for="classificacao">Classificação indicativa</label>
             <select id="classificacao" formControlName="classificacaoIndicativa">
-              <option [ngValue]="0">Livre</option><option [ngValue]="10">10 anos</option>
-              <option [ngValue]="12">12 anos</option><option [ngValue]="14">14 anos</option>
-              <option [ngValue]="16">16 anos</option><option [ngValue]="18">18 anos</option>
+              <option [ngValue]="0">Livre</option>
+              <option [ngValue]="10">10 anos</option>
+              <option [ngValue]="12">12 anos</option>
+              <option [ngValue]="14">14 anos</option>
+              <option [ngValue]="16">16 anos</option>
+              <option [ngValue]="18">18 anos</option>
             </select>
+            @if (campoInvalido('classificacaoIndicativa')) {
+              <small>Selecione uma classificação válida.</small>
+            }
           </div>
         </div>
       </section>
@@ -72,20 +110,35 @@
         <div class="campos campos-exibicao">
           <div class="campo">
             <label for="sala">Sala</label>
-            <input id="sala" type="number" min="1" formControlName="sala" inputmode="numeric" />
-            @if (campoInvalido('sala')) { <small>Informe uma sala válida.</small> }
+            <input
+              id="sala"
+              type="number"
+              min="1"
+              max="99"
+              step="1"
+              formControlName="sala"
+              inputmode="numeric"
+              [attr.aria-invalid]="campoInvalido('sala')"
+            />
+            @if (campoInvalido('sala')) {
+              <small>Informe um número inteiro de 1 a 99.</small>
+            }
           </div>
 
           <div class="campo">
             <label for="data">Data</label>
             <input id="data" type="date" formControlName="data" />
-            @if (campoInvalido('data')) { <small>Informe a data.</small> }
+            @if (campoInvalido('data')) {
+              <small>Informe uma data válida.</small>
+            }
           </div>
 
           <div class="campo">
             <label for="horario">Horário</label>
             <input id="horario" type="time" formControlName="horario" />
-            @if (campoInvalido('horario')) { <small>Informe o horário.</small> }
+            @if (campoInvalido('horario')) {
+              <small>Informe o horário.</small>
+            }
           </div>
 
           <label class="checkbox campo-largo">
@@ -101,7 +154,7 @@
       <footer class="acoes">
         <a class="botao botao-secundario" routerLink="/admin">Cancelar</a>
         <button class="botao botao-primario" type="submit" [disabled]="enviando">
-          {{ enviando ? 'Salvando...' : (editando ? 'Salvar alterações' : 'Cadastrar sessão') }}
+          {{ enviando ? 'Salvando...' : editando ? 'Salvar alterações' : 'Cadastrar sessão' }}
         </button>
       </footer>
     </form>

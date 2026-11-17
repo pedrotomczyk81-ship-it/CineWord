@@ -1,2 +1,21 @@
-:host { display: flex; flex-direction: column; min-height: 100dvh; }
-main { flex: 1; }
+:host {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+main {
+  flex: 1;
+}
+.pular-conteudo {
+  position: fixed;
+  left: 16px;
+  top: -100px;
+  z-index: 20;
+  background: #fff;
+  color: #172036;
+  padding: 12px 20px;
+  border-radius: 6px;
+}
+.pular-conteudo:focus {
+  top: 12px;
+}

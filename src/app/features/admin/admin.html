@@ -20,7 +20,7 @@
     <article class="metrica">
       <span class="metrica-rotulo">Disponíveis</span>
       <strong>{{ totalDisponiveis() }}</strong>
-      <small>com venda aberta</small>
+      <small>abertas na programação</small>
     </article>
     <article class="metrica">
       <span class="metrica-rotulo">Indisponíveis</span>
@@ -34,6 +34,18 @@
     </article>
   </div>
 
+  @if (mensagemSucesso()) {
+    <div class="aviso sucesso" role="status">
+      <span>{{ mensagemSucesso() }}</span
+      ><button
+        type="button"
+        (click)="mensagemSucesso.set('')"
+        aria-label="Fechar mensagem de sucesso"
+      >
+        Fechar
+      </button>
+    </div>
+  }
   @if (mensagemErro) {
     <div class="aviso erro" role="alert">
       <div>
@@ -48,7 +60,10 @@
     <header class="cabecalho-lista">
       <div>
         <h2 id="titulo-lista">Sessões cadastradas</h2>
-        <p>{{ sessoesFiltradas().length }} {{ sessoesFiltradas().length === 1 ? 'resultado' : 'resultados' }}</p>
+        <p>
+          {{ sessoesFiltradas().length }}
+          {{ sessoesFiltradas().length === 1 ? 'resultado' : 'resultados' }}
+        </p>
       </div>
 
       <div class="filtros">
@@ -79,6 +94,11 @@
           <div class="skeleton-linha"><span></span><span></span><span></span><span></span></div>
         }
       </div>
+    } @else if (mensagemErro && sessoes().length === 0) {
+      <div class="estado">
+        <h3>A lista não pôde ser carregada</h3>
+        <p>Confira a mensagem acima e tente novamente.</p>
+      </div>
     } @else if (sessoes().length === 0) {
       <div class="estado vazio">
         <span class="estado-marca" aria-hidden="true">CW</span>
@@ -90,7 +110,9 @@
       <div class="estado vazio">
         <h3>Nenhum resultado encontrado</h3>
         <p>Tente buscar outro filme ou remova os filtros aplicados.</p>
-        <button class="botao botao-secundario" type="button" (click)="limparFiltros()">Limpar filtros</button>
+        <button class="botao botao-secundario" type="button" (click)="limparFiltros()">
+          Limpar filtros
+        </button>
       </div>
     } @else {
       <div class="tabela-container">
@@ -109,14 +131,25 @@
               <tr>
                 <td data-label="Filme">
                   <div class="filme">
-                    <span class="filme-inicial" aria-hidden="true">{{ sessao.filme.charAt(0) }}</span>
+                    <span class="filme-inicial" aria-hidden="true">{{
+                      sessao.filme.charAt(0)
+                    }}</span>
                     <div>
                       <strong>{{ sessao.filme }}</strong>
-                      <span>{{ sessao.genero }} · {{ sessao.classificacaoIndicativa === 0 ? 'Livre' : sessao.classificacaoIndicativa + ' anos' }}</span>
+                      <span
+                        >{{ sessao.genero }} ·
+                        {{
+                          sessao.classificacaoIndicativa === 0
+                            ? 'Livre'
+                            : sessao.classificacaoIndicativa + ' anos'
+                        }}</span
+                      >
                     </div>
                   </div>
                 </td>
-                <td data-label="Exibição"><strong>Sala {{ sessao.sala }}</strong></td>
+                <td data-label="Exibição">
+                  <strong>Sala {{ sessao.sala }}</strong>
+                </td>
                 <td data-label="Data e horário">
                   <div class="data">
                     <strong>{{ sessao.data | date: 'dd/MM/yyyy' : 'UTC' }}</strong>
@@ -129,8 +162,31 @@
                   </span>
                 </td>
                 <td class="acoes">
+                  <button
+                    class="acao-editar acao-status"
+                    type="button"
+                    [disabled]="!!alterandoId || !!excluindoId"
+                    (click)="alternarDisponibilidade(sessao)"
+                    [attr.aria-label]="
+                      (sessao.disponivel ? 'Indisponibilizar ' : 'Disponibilizar ') + sessao.filme
+                    "
+                  >
+                    {{
+                      alterandoId === sessao.id
+                        ? 'Salvando...'
+                        : sessao.disponivel
+                          ? 'Indisponibilizar'
+                          : 'Disponibilizar'
+                    }}
+                  </button>
                   <a class="acao-editar" [routerLink]="['/admin/editar', sessao.id]">Editar</a>
-                  <button class="acao-excluir" type="button" [disabled]="excluindoId === sessao.id" (click)="excluir(sessao)" [attr.aria-label]="'Excluir sessão de ' + sessao.filme">
+                  <button
+                    class="acao-excluir"
+                    type="button"
+                    [disabled]="excluindoId === sessao.id"
+                    (click)="excluir(sessao)"
+                    [attr.aria-label]="'Excluir sessão de ' + sessao.filme"
+                  >
                     {{ excluindoId === sessao.id ? 'Excluindo...' : 'Excluir' }}
                   </button>
                 </td>

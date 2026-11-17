@@ -1,10 +1,80 @@
-header { position: relative; z-index: 2; border-bottom: 1px solid rgb(255 255 255 / 8%); background: #151b2c; color: white; }
-nav { max-width: 1240px; min-height: 72px; margin: auto; padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
-a { text-decoration: none; }
-.marca { font-size: 25px; font-weight: 850; letter-spacing: -.04em; }
-.marca span { color: #f7bc56; }
-.links { display: flex; align-items: center; gap: 24px; }
-.links a { color: #cbd1df; padding: 9px 0; border-bottom: 2px solid transparent; font-size: 14px; font-weight: 650; transition: color 150ms ease, border-color 150ms ease; }
-.links a:hover, .links a.ativo { color: white; border-bottom-color: #f7bc56; }
-@media (max-width: 560px) { nav { min-height: 64px; padding: 13px 16px; gap: 12px; } .marca { font-size: 22px; } .links { min-width: 0; gap: 10px; } .links a { font-size: 11px; white-space: nowrap; } }
-@media (max-width: 390px) { .marca { font-size: 20px; } .links { gap: 8px; } .links a { font-size: 10px; } }
+header {
+  position: relative;
+  z-index: 2;
+  border-bottom: 1px solid rgb(255 255 255 / 8%);
+  background: #151b2c;
+  color: white;
+}
+nav {
+  max-width: 1240px;
+  min-height: 72px;
+  margin: auto;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+a {
+  text-decoration: none;
+}
+.marca {
+  font-size: 25px;
+  font-weight: 850;
+  letter-spacing: -0.04em;
+}
+.marca span {
+  color: #f7bc56;
+}
+.links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.links a {
+  color: #cbd1df;
+  padding: 9px 0;
+  border-bottom: 2px solid transparent;
+  font-size: 14px;
+  font-weight: 650;
+  transition:
+    color 150ms ease,
+    border-color 150ms ease;
+}
+.links a:hover,
+.links a.ativo {
+  color: white;
+  border-bottom-color: #f7bc56;
+}
+.modo-local {
+  padding: 9px 16px;
+  background: #fff1d6;
+  color: #69470b;
+  font-size: 12px;
+  text-align: center;
+  line-height: 1.6;
+}
+.modo-local a {
+  margin-left: 8px;
+  font-weight: 750;
+  text-decoration: underline;
+}
+@media (max-width: 560px) {
+  nav {
+    min-height: 64px;
+    padding: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .marca {
+    font-size: 24px;
+  }
+  .links {
+    width: 100%;
+    gap: 20px;
+  }
+  .links a {
+    font-size: 13px;
+  }
+}

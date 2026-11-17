@@ -3,25 +3,38 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./features/home/home').then(m => m.Home),
+    loadComponent: () => import('./features/home/home').then((m) => m.Home),
     title: 'Início | CineWord',
   },
   {
+    path: 'programacao',
+    loadComponent: () => import('./features/home/home').then((m) => m.Home),
+    data: { programacao: true },
+    title: 'Programação | CineWord',
+  },
+  {
+    path: 'sessoes/:id',
+    loadComponent: () => import('./features/detalhes/detalhes').then((m) => m.Detalhes),
+    title: 'Detalhes da sessão | CineWord',
+  },
+  {
+    path: 'sobre',
+    loadComponent: () => import('./features/sobre/sobre').then((m) => m.Sobre),
+    title: 'Sobre | CineWord',
+  },
+  {
     path: 'admin',
-    loadComponent: () =>
-      import('./features/admin/admin').then((m) => m.Admin),
+    loadComponent: () => import('./features/admin/admin').then((m) => m.Admin),
     title: 'Sessões | CineWord',
   },
   {
     path: 'admin/novo',
-    loadComponent: () =>
-      import('./features/manutencao/manutencao').then((m) => m.Manutencao),
+    loadComponent: () => import('./features/manutencao/manutencao').then((m) => m.Manutencao),
     title: 'Nova sessão | CineWord',
   },
   {
     path: 'admin/editar/:id',
-    loadComponent: () =>
-      import('./features/manutencao/manutencao').then((m) => m.Manutencao),
+    loadComponent: () => import('./features/manutencao/manutencao').then((m) => m.Manutencao),
     title: 'Editar sessão | CineWord',
   },
   { path: '**', redirectTo: '' },

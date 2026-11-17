@@ -1,0 +1,48 @@
+<article>
+  <a
+    class="cartaz"
+    [class.animacao]="sessao().genero === 'Animação'"
+    [class.drama]="sessao().genero === 'Drama' || sessao().genero === 'Romance'"
+    [class.suspense]="sessao().genero === 'Suspense' || sessao().genero === 'Terror'"
+    [routerLink]="['/sessoes', sessao().id]"
+    [attr.aria-label]="'Ver detalhes de ' + sessao().filme"
+  >
+    <span class="marca">CINEWORD / {{ sessao().genero }}</span>
+    <span class="orbita" aria-hidden="true"></span>
+    <strong>{{ sessao().filme }}</strong>
+    <span class="rodape-cartaz"
+      ><span>PROGRAMAÇÃO DE CINEMA</span
+      ><span class="classificacao">{{
+        sessao().classificacaoIndicativa === 0 ? 'L' : sessao().classificacaoIndicativa
+      }}</span></span
+    >
+  </a>
+  @if (!somenteCartaz()) {
+    <div class="info">
+      <span class="status" [class.fechada]="!sessao().disponivel">{{
+        sessao().disponivel ? 'Disponível' : 'Indisponível'
+      }}</span>
+      <h3>
+        <a [routerLink]="['/sessoes', sessao().id]">{{ sessao().filme }}</a>
+      </h3>
+      <p>
+        {{ sessao().genero }} ·
+        {{
+          sessao().classificacaoIndicativa === 0
+            ? 'Livre'
+            : sessao().classificacaoIndicativa + ' anos'
+        }}
+      </p>
+      <div class="exibicao">
+        <span>{{ sessao().data | date: 'dd/MM/yyyy' : 'UTC' }} · {{ sessao().horario }}</span
+        ><strong>Sala {{ sessao().sala }}</strong>
+      </div>
+      <a
+        class="detalhes"
+        [routerLink]="['/sessoes', sessao().id]"
+        [attr.aria-label]="'Detalhes de ' + sessao().filme"
+        >Ver sessão <span aria-hidden="true">↗</span></a
+      >
+    </div>
+  }
+</article>

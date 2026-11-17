@@ -1,0 +1,89 @@
+.pagina {
+  max-width: 1100px;
+  margin: auto;
+  padding: 48px 24px 72px;
+}
+.etiqueta {
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  font-weight: 800;
+  color: #895900;
+}
+h1 {
+  font-size: clamp(32px, 5vw, 48px);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  max-width: 700px;
+}
+.introducao {
+  max-width: 700px;
+  font-size: 18px;
+  color: var(--texto-secundario);
+  line-height: 1.8;
+}
+.recursos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 32px;
+  margin: 48px 0;
+}
+.recursos article {
+  border-top: 2px solid #f7bc56;
+  padding-top: 20px;
+}
+.recursos span {
+  font-size: 11px;
+  font-weight: 750;
+  color: #895900;
+  letter-spacing: 0.1em;
+}
+h2 {
+  font-size: 21px;
+}
+p {
+  line-height: 1.8;
+  color: var(--texto-secundario);
+}
+.dados {
+  background: #fff;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  padding: 24px 32px;
+}
+.dados h2 {
+  margin-top: 0;
+}
+.links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 32px;
+}
+.links > a {
+  font-size: 14px;
+  font-weight: 750;
+  color: #81530a;
+}
+.links .botao {
+  display: inline-flex;
+  background: #f7bc56;
+  color: #172036;
+  min-height: 44px;
+  align-items: center;
+  padding: 12px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+}
+@media (max-width: 700px) {
+  .recursos {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .pagina {
+    padding: 32px 16px 48px;
+  }
+  .dados {
+    padding: 20px;
+  }
+}

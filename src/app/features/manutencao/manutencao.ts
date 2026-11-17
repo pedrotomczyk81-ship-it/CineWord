@@ -1,9 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { finalize } from 'rxjs';
 
 import { Sessao } from '../../core/models/sessao.model';
-import { SessaoService } from '../../core/service/sessao.service';
+import { mensagemDaFalha, SessaoService } from '../../core/service/sessao.service';
+import { CLASSIFICACOES, dataValida, GENEROS } from '../../core/models/sessao.validation';
 
 @Component({
   selector: 'app-manutencao',
@@ -16,14 +18,51 @@ export class Manutencao implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly sessaoService = inject(SessaoService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly form = this.formBuilder.nonNullable.group({
-    filme: ['', [Validators.required, Validators.minLength(2)]],
-    genero: ['', Validators.required],
-    classificacaoIndicativa: [0, [Validators.required, Validators.min(0), Validators.max(18)]],
-    sala: [1, [Validators.required, Validators.min(1)]],
-    data: ['', Validators.required],
-    horario: ['', Validators.required],
+    filme: [
+      '',
+      [
+        Validators.required,
+        (control: AbstractControl) => {
+          const value = String(control.value ?? '').trim();
+          return value.length >= 2 && value.length <= 120 ? null : { titulo: true };
+        },
+      ],
+    ],
+    genero: [
+      '',
+      [
+        Validators.required,
+        (control: AbstractControl) => (GENEROS.includes(control.value) ? null : { genero: true }),
+      ],
+    ],
+    classificacaoIndicativa: [
+      0,
+      [
+        Validators.required,
+        (control: AbstractControl) =>
+          CLASSIFICACOES.includes(control.value) ? null : { classificacao: true },
+      ],
+    ],
+    sala: [
+      1,
+      [
+        Validators.required,
+        Validators.min(1),
+        Validators.max(99),
+        (control: AbstractControl) => (Number.isInteger(control.value) ? null : { inteiro: true }),
+      ],
+    ],
+    data: [
+      '',
+      [
+        Validators.required,
+        (control: AbstractControl) => (dataValida(String(control.value)) ? null : { data: true }),
+      ],
+    ],
+    horario: ['', [Validators.required, Validators.pattern(/^([01]\d|2[0-3]):[0-5]\d$/)]],
     disponivel: [true],
   });
 
@@ -31,6 +70,7 @@ export class Manutencao implements OnInit {
   carregando = false;
   enviando = false;
   mensagemErro = '';
+  falhaCarregamento = false;
 
   get editando(): boolean {
     return Boolean(this.id);
@@ -45,23 +85,29 @@ export class Manutencao implements OnInit {
 
   load(): void {
     this.carregando = true;
+    this.falhaCarregamento = false;
     this.mensagemErro = '';
     this.form.disable();
 
-    this.sessaoService.getById(this.id).subscribe({
-      next: ({ id: _id, ...sessao }) => {
-        this.form.setValue(sessao);
-        this.form.enable();
-        this.carregando = false;
-      },
-      error: () => {
-        this.mensagemErro = 'Não foi possível carregar a sessão solicitada.';
-        this.carregando = false;
-      },
-    });
+    this.sessaoService
+      .getById(this.id)
+      .pipe(finalize(() => this.cdr.markForCheck()))
+      .subscribe({
+        next: ({ id: _id, ...sessao }) => {
+          this.form.setValue(sessao);
+          this.form.enable();
+          this.carregando = false;
+        },
+        error: (error: unknown) => {
+          this.mensagemErro = mensagemDaFalha(error);
+          this.falhaCarregamento = true;
+          this.carregando = false;
+        },
+      });
   }
 
   submit(): void {
+    if (this.enviando || this.carregando || this.falhaCarregamento || this.form.disabled) return;
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
@@ -76,10 +122,13 @@ export class Manutencao implements OnInit {
       ? this.sessaoService.update(this.id, sessao)
       : this.sessaoService.create(sessao);
 
-    request.subscribe({
-      next: () => void this.router.navigate(['/admin']),
-      error: () => {
-        this.mensagemErro = `Não foi possível ${this.editando ? 'atualizar' : 'cadastrar'} a sessão.`;
+    request.pipe(finalize(() => this.cdr.markForCheck())).subscribe({
+      next: () =>
+        void this.router.navigate(['/admin'], {
+          queryParams: { sucesso: this.editando ? 'atualizada' : 'criada' },
+        }),
+      error: (error: unknown) => {
+        this.mensagemErro = mensagemDaFalha(error);
         this.enviando = false;
         this.form.enable();
       },

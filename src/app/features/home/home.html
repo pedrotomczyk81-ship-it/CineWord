@@ -1,19 +1,107 @@
-<section class="apresentacao" aria-labelledby="titulo">
-  <div class="conteudo">
-    <p class="etiqueta">CINEWORD</p>
-    <h1 id="titulo">A próxima sessão<br>começa aqui.</h1>
-    <p class="descricao">Programação de Cinema: um espaço para organizar filmes, salas e horários e acompanhar a disponibilidade das sessões.</p>
-    <a class="botao" href="#projeto">Conheça o projeto</a>
+@if (!programacao) {
+  <section class="apresentacao" aria-labelledby="titulo-home">
+    <div class="conteudo">
+      <p class="etiqueta">UM ENCONTRO COM O CINEMA</p>
+      <h1 id="titulo-home">A próxima sessão<br />começa aqui.</h1>
+      <p class="descricao">
+        Grandes histórias, novos mundos e um lugar para você. Explore os filmes e encontre sua
+        próxima sessão.
+      </p>
+      <a class="botao" routerLink="/programacao"
+        >Explorar programação <span aria-hidden="true">→</span></a
+      >
+    </div>
+    <div class="simbolo" aria-hidden="true">
+      CW<span>CINEMA</span><small>LUZ. CÂMERA. ENCONTRO.</small>
+    </div>
+  </section>
+}
+<section class="catalogo" aria-labelledby="titulo-catalogo">
+  <header class="cabecalho">
+    <div>
+      <p class="etiqueta">ESCOLHA SUA PRÓXIMA HISTÓRIA</p>
+      @if (programacao) {
+        <h1 id="titulo-catalogo">Programação completa</h1>
+      } @else {
+        <h2 id="titulo-catalogo">Em cartaz no CineWord</h2>
+      }
+      <p>Confira datas, salas, horários e disponibilidade.</p>
+    </div>
+    <a class="link" routerLink="/admin/novo">Cadastrar sessão <span aria-hidden="true">＋</span></a>
+  </header>
+  <div class="filtros">
+    <label
+      >Buscar filme<input
+        type="search"
+        placeholder="Qual história você quer ver?"
+        [ngModel]="busca()"
+        (ngModelChange)="busca.set($event)"
+    /></label>
+    <label
+      >Gênero<select [ngModel]="genero()" (ngModelChange)="genero.set($event)">
+        <option value="">Todos os gêneros</option>
+        @for (item of generos(); track item) {
+          <option [value]="item">{{ item }}</option>
+        }
+      </select></label
+    >
+    <label>Data<input type="date" [ngModel]="data()" (ngModelChange)="data.set($event)" /></label>
+    <label
+      >Disponibilidade<select [ngModel]="status()" (ngModelChange)="status.set($event)">
+        <option value="todas">Todas as sessões</option>
+        <option value="disponiveis">Disponíveis</option>
+        <option value="indisponiveis">Indisponíveis</option>
+      </select></label
+    >
+    <button class="limpar" type="button" (click)="limpar()">Limpar filtros</button>
   </div>
-  <div class="simbolo" aria-hidden="true">CW<span>CINEMA</span></div>
-</section>
-<section id="projeto" class="projeto" aria-labelledby="sobre-titulo">
-  <p class="etiqueta">SOBRE O PROJETO</p>
-  <h2 id="sobre-titulo">Tudo o que uma sessão precisa.</h2>
-  <p>O CineWord está em desenvolvimento. Nas próximas etapas, será possível cadastrar e gerenciar sessões com as seguintes informações:</p>
-  <div class="cards">
-    <article><span class="numero">01</span><h3>Filme</h3><p>Título, gênero e classificação indicativa.</p></article>
-    <article><span class="numero">02</span><h3>Programação</h3><p>Sala, data e horário de cada sessão.</p></article>
-    <article><span class="numero">03</span><h3>Disponibilidade</h3><p>Indicação de sessões disponíveis ou indisponíveis.</p></article>
-  </div>
+  @if (carregando()) {
+    <div class="grade" role="status" aria-label="Carregando programação" aria-busy="true">
+      @for (item of [1, 2, 3]; track item) {
+        <div class="skeleton"></div>
+      }
+    </div>
+  } @else if (erro()) {
+    <div class="estado erro" role="alert">
+      <h2>Não foi possível carregar a programação</h2>
+      <p>{{ erro() }}</p>
+      <button type="button" class="botao" (click)="load()">Tentar novamente</button>
+    </div>
+  } @else if (filtradas().length === 0) {
+    <div class="estado" role="status">
+      <h2>{{ sessoes().length ? 'Nenhuma sessão encontrada' : 'A programação está vazia' }}</h2>
+      <p>
+        {{
+          sessoes().length
+            ? 'Experimente outro título, gênero ou data.'
+            : 'Cadastre uma sessão para começar a programação.'
+        }}
+      </p>
+      @if (sessoes().length) {
+        <button type="button" class="botao" (click)="limpar()">Limpar filtros</button>
+      } @else {
+        <a class="botao" routerLink="/admin/novo">Cadastrar sessão</a>
+      }
+    </div>
+  } @else {
+    <p class="contagem" aria-live="polite">
+      {{ filtradas().length }}
+      {{ filtradas().length === 1 ? 'sessão encontrada' : 'sessões encontradas' }}
+      @if (visiveis().length < filtradas().length) {
+        <span>· mostrando {{ visiveis().length }} destaques</span>
+      }
+    </p>
+    <div class="grade">
+      @for (sessao of visiveis(); track sessao.id) {
+        <app-sessao-card [sessao]="sessao" />
+      }
+    </div>
+    @if (!programacao) {
+      <div class="ver-todas">
+        <a class="botao" routerLink="/programacao"
+          >Ver programação completa <span aria-hidden="true">→</span></a
+        >
+      </div>
+    }
+  }
 </section>

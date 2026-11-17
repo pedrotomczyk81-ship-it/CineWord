@@ -2,8 +2,17 @@
   <nav aria-label="Navegação principal">
     <a class="marca" routerLink="/">Cine<span>Word</span></a>
     <div class="links">
-      <a routerLink="/" routerLinkActive="ativo" [routerLinkActiveOptions]="{ exact: true }">Início</a>
-      <a routerLink="/admin" routerLinkActive="ativo">Administrar sessões</a>
+      <a routerLink="/" routerLinkActive="ativo" [routerLinkActiveOptions]="{ exact: true }"
+        >Início</a
+      >
+      <a routerLink="/programacao" routerLinkActive="ativo">Programação</a>
+      <a routerLink="/admin" routerLinkActive="ativo">Administrar</a>
+      <a routerLink="/sobre" routerLinkActive="ativo">Sobre</a>
     </div>
   </nav>
 </header>
+@if (service.modoLocal) {
+  <div class="modo-local">
+    Modo local · Dados salvos neste navegador <a routerLink="/sobre">Saiba mais</a>
+  </div>
+}
