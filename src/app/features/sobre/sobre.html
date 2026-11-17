@@ -30,6 +30,35 @@
       </p>
     </article>
   </div>
+  <section class="localizacao" aria-labelledby="titulo-localizacao">
+    <div class="localizacao-info">
+      <p class="etiqueta">LOCALIZAÇÃO</p>
+      <h2 id="titulo-localizacao">Encontre o cinema</h2>
+      <h3>Kinoplex</h3>
+      <p>
+        Confira a localização no mapa e abra o Google Maps para consultar o trajeto até o cinema.
+      </p>
+      <a
+        class="mapa-link"
+        href="https://www.google.com/maps?cid=7540557893728446206"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Abrir no Google Maps <span aria-hidden="true">↗</span>
+        <span class="sr-only">(abre em uma nova aba)</span>
+      </a>
+    </div>
+    <iframe
+      class="mapa"
+      title="Localização do Kinoplex no Google Maps"
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6178.610202787885!2d-43.182722231329244!3d-22.956722496991883!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997ff850b6b019%3A0x68a57173e7f3a6fe!2sKinoplex!5e0!3m2!1spt-BR!2sbr!4v1794959297609!5m2!1spt-BR!2sbr"
+      width="600"
+      height="450"
+      allowfullscreen
+      loading="lazy"
+      referrerpolicy="strict-origin-when-cross-origin"
+    ></iframe>
+  </section>
   <section class="dados" aria-labelledby="titulo-dados">
     <h2 id="titulo-dados">Onde os dados ficam salvos?</h2>
     @if (service.modoLocal) {
